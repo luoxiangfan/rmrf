@@ -1,6 +1,6 @@
 {
   "name": "node-rmrf",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "license": "MIT",
   "description": "The rm -rf command implementation for node.",
   "type": "module",
