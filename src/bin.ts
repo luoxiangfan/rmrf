@@ -1,13 +1,7 @@
 #!/usr/bin/env node
-import { readFileSync } from 'fs';
-import { resolve } from 'path';
 import { createInterface } from 'readline';
 import { rmrfSync } from './index.js';
-
-const loadJSON = (path: string) =>
-  JSON.parse(readFileSync(resolve(path)).toString());
-
-const { version } = loadJSON('./package.json');
+import { version } from '../package.json'
 
 const runHelpForUsage = () =>
   console.error('run `node-rmrf --help` for usage information');
