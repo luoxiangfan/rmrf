@@ -53,7 +53,9 @@ const main = async (...args: string[]) => {
   }
 
   if (!paths.length) {
-    console.error('node-rmrf: must provide a path(file or directory) to remove');
+    console.error(
+      'node-rmrf: must provide a path(file or directory) to remove'
+    );
     runHelpForUsage();
     return 1;
   }
