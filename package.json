@@ -1,6 +1,6 @@
 {
   "name": "node-rmrf",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "license": "MIT",
   "description": "The rm -rf command implementation for node.",
   "type": "module",
@@ -44,13 +44,12 @@
     "type-check": "tsc --strict --noEmit",
     "format": "prettier --write src/",
     "build": "unbuild",
-    "release": "npm run format && unbuild && release-it"
+    "release": "npm publish"
   },
   "devDependencies": {
     "@types/node": "^22.7.8",
     "eslint": "^9.13.0",
     "prettier": "^3.3.3",
-    "release-it": "^17.10.0",
     "typescript": "^5.6.3",
     "unbuild": "^2.0.0"
   }
