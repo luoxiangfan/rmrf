@@ -1,20 +1,20 @@
 #!/usr/bin/env node
 import { createInterface } from 'readline';
 import { rmrfSync } from './index.js';
-import { version } from '../package.json'
+import { name, version } from '../package.json';
 
 const runHelpForUsage = () =>
-  console.error('run `node-rmrf --help` for usage information');
+  console.error(`run \`${name} --help\` for usage information`);
 
-export const help = `node-rmrf version ${version}
+export const help = `${name} version ${version}
 
-Usage: node-rmrf <path> [<path> ...]
+Usage: ${name} <path> [<path> ...]
 Deletes all files and folders at "path", recursively.
 
 Options:
   --                   Treat all subsequent arguments as paths
   -h --help            Usage information
-  --version            The version of node-rmrf
+  --version            The version of ${name}
 `;
 
 const main = async (...args: string[]) => {
@@ -47,9 +47,7 @@ const main = async (...args: string[]) => {
   }
 
   if (!paths.length) {
-    console.error(
-      'node-rmrf: must provide a path(file or directory) to remove'
-    );
+    console.error(`${name}: must provide a path(file or directory) to remove`);
     runHelpForUsage();
     return 1;
   }
