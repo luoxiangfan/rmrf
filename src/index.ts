@@ -48,7 +48,6 @@ function rmdir(path: string) {
 function rmfileordir(filePath: string) {
   const resolvedPath = resolve(filePath);
   if (!existsSync(resolvedPath)) {
-    console.error('not exist');
     return;
   }
   const type = checkPath(resolvedPath);
