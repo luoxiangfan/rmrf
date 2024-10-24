@@ -34,7 +34,7 @@ const main = async (...args: string[]) => {
     } else if (arg === '-h' || arg === '--help') {
       console.log(help);
       return 0;
-    } else if (arg === '--version') {
+    } else if (arg === '-v' || arg === '--version') {
       console.log(version);
       return 0;
     } else if (/^-/.test(arg)) {
