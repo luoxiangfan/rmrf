@@ -50,10 +50,10 @@
     "release": "npm publish"
   },
   "devDependencies": {
-    "@types/node": "^22.9.0",
-    "eslint": "^9.14.0",
-    "prettier": "^3.3.3",
-    "typescript": "^5.6.3",
+    "@types/node": "^22.10.0",
+    "eslint": "^9.15.0",
+    "prettier": "^3.4.1",
+    "typescript": "^5.7.2",
     "unbuild": "^2.0.0"
   }
 }
