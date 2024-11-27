@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 import { createInterface } from 'readline';
 import { rmrfSync } from './index.js';
-import { name, version } from '../package.json';
+import packageConfig from '../package.json' assert { type: 'json' };
+
+const { name, version } = packageConfig
 
 const runHelpForUsage = () =>
   console.error(`run \`${name} --help\` for usage information`);
