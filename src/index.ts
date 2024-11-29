@@ -1,6 +1,6 @@
 import {
   statSync,
-  rmSync,
+  unlinkSync,
   existsSync,
   readdirSync,
   lstatSync,
@@ -24,7 +24,7 @@ function checkPath(path: string) {
 
 function rmfile(path: string) {
   try {
-    rmSync(path);
+    unlinkSync(path);
   } catch (err) {
     console.error(`Unable to delete file: '${path}'`);
     console.error(err);
