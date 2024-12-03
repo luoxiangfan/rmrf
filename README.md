@@ -20,12 +20,12 @@ const { rmrfSync } = require('node-rmrf')
 ### Command Line Interface
 
 ```
-node-rmrf version 1.0.0
+node-rmrf version 1.0.6
 
 Usage: node-rmrf <path> [<path> ...]
 Deletes all files and folders at "path", recursively.
 
 Options:
   --                   Treat all subsequent arguments as paths
-  -h --help            Usage information
-  --version            The version of node-rmrf
+  -h, --help            Usage information
+  -v, --version            The version of node-rmrf
