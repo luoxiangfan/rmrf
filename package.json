@@ -47,7 +47,7 @@
     "type-check": "tsc --strict --noEmit",
     "format": "prettier --write src/",
     "build": "unbuild",
-    "release": "npm publish"
+    "release": "unbuild && npm publish"
   },
   "devDependencies": {
     "@types/node": "^22.10.1",
