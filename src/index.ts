@@ -1,5 +1,5 @@
 import { unlinkSync, existsSync, readdirSync, lstatSync, rmdirSync } from 'fs';
-import { resolve, sep } from 'path';
+import { resolve } from 'path';
 
 function checkPath(path: string) {
   try {
@@ -25,8 +25,8 @@ function rmfile(path: string) {
 function rmdir(path: string) {
   if (existsSync(path)) {
     readdirSync(path).forEach((file: string) => {
-      const curPath = path + sep + file;
-      if (lstatSync(curPath).isDirectory()) {
+      const curPath = resolve(path, file);
+      if (checkPath(curPath) === 'dir') {
         rmdir(curPath);
       } else {
         rmfile(curPath);
@@ -38,13 +38,9 @@ function rmdir(path: string) {
 
 function rmfileordir(path: string) {
   const resolvedPath = resolve(path);
-  if (!existsSync(resolvedPath)) {
-    return;
-  }
-  const type = checkPath(resolvedPath);
-  if (type === 'dir') {
+  if (checkPath(resolvedPath) === 'dir') {
     rmdir(path);
-  } else if (type === 'file') {
+  } else {
     rmfile(resolvedPath);
   }
 }
