@@ -9,8 +9,7 @@ function checkPath(path: string) {
     } else if (stats.isDirectory()) {
       return 'dir';
     }
-  } catch (err) {
-    console.error(err);
+  } catch {
     return 'error';
   }
 }
@@ -18,9 +17,8 @@ function checkPath(path: string) {
 function rmfile(path: string) {
   try {
     unlinkSync(path);
-  } catch (err) {
+  } catch {
     console.error(`Unable to delete file: '${path}'`);
-    console.error(err);
   }
 }
 
