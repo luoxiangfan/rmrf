@@ -13,8 +13,8 @@ Deletes all files and folders at "path", recursively.
 
 Options:
   --                   Treat all subsequent arguments as paths
-  -h --help            Usage information
-  --version            The version of ${name}
+  -h, --help            Usage information
+  -v, --version            The version of ${name}
 `;
 
 const main = async (...args: string[]) => {
@@ -63,10 +63,6 @@ const main = async (...args: string[]) => {
 
   return 0;
 };
-main.help = help;
-main.version = version;
-
-export default main;
 
 const args = process.argv.slice(2);
 main(...args).then(
