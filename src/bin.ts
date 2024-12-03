@@ -6,7 +6,7 @@ import { name, version } from '../package.json';
 const runHelpForUsage = () =>
   console.error(`run \`${name} --help\` for usage information`);
 
-export const help = `${name} version ${version}
+const help = `${name} version ${version}
 
 Usage: ${name} <path> [<path> ...]
 Deletes all files and folders at "path", recursively.

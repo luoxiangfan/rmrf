@@ -1,16 +1,9 @@
-import {
-  statSync,
-  unlinkSync,
-  existsSync,
-  readdirSync,
-  lstatSync,
-  rmdirSync
-} from 'fs';
-import { resolve } from 'path';
+import { unlinkSync, existsSync, readdirSync, lstatSync, rmdirSync } from 'fs';
+import { resolve, sep } from 'path';
 
 function checkPath(path: string) {
   try {
-    const stats = statSync(path);
+    const stats = lstatSync(path);
     if (stats.isFile()) {
       return 'file';
     } else if (stats.isDirectory()) {
@@ -34,7 +27,7 @@ function rmfile(path: string) {
 function rmdir(path: string) {
   if (existsSync(path)) {
     readdirSync(path).forEach((file: string) => {
-      const curPath = path + '/' + file;
+      const curPath = path + sep + file;
       if (lstatSync(curPath).isDirectory()) {
         rmdir(curPath);
       } else {
@@ -45,29 +38,27 @@ function rmdir(path: string) {
   }
 }
 
-function rmfileordir(filePath: string) {
-  const resolvedPath = resolve(filePath);
+function rmfileordir(path: string) {
+  const resolvedPath = resolve(path);
   if (!existsSync(resolvedPath)) {
     return;
   }
   const type = checkPath(resolvedPath);
   if (type === 'dir') {
-    rmdir(filePath);
+    rmdir(path);
   } else if (type === 'file') {
     rmfile(resolvedPath);
   }
 }
 
-function rm(...args: [...string[]]) {
-  if (args.length) {
-    args.forEach((path) => {
-      rmfileordir(path);
-    });
+function rm(paths: string[]) {
+  for (const key in paths) {
+    rmfileordir(paths[key]);
   }
 }
 
-const rmrf = async (...args: [...string[]]) => rm(...args);
+const rmrf = async (...paths: [...string[]]) => rm(paths);
 
-const rmrfSync = (...args: [...string[]]) => rm(...args);
+const rmrfSync = (...paths: [...string[]]) => rm(paths);
 
 export { rmrf, rmrfSync };
