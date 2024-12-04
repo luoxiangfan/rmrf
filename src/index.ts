@@ -18,7 +18,7 @@ function rmfile(path: string) {
   try {
     unlinkSync(path);
   } catch {
-    console.error(`Unable to delete file: '${path}'`);
+    return false;
   }
 }
 
@@ -37,11 +37,13 @@ function rmdir(path: string) {
 }
 
 function rmfileordir(path: string) {
-  const resolvedPath = resolve(path);
-  if (checkPath(resolvedPath) === 'dir') {
-    rmdir(path);
-  } else {
-    rmfile(resolvedPath);
+  const _path = resolve(path);
+  if (existsSync(_path)) {
+    if (checkPath(_path) === 'dir') {
+      rmdir(path);
+    } else {
+      rmfile(_path);
+    }
   }
 }
 
