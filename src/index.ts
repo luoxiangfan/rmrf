@@ -1,5 +1,6 @@
 import { unlinkSync, existsSync, readdirSync, lstatSync, rmdirSync } from 'fs';
 import { resolve } from 'path';
+import readdir from '@lxf2513/readdir-sync-recursive';
 
 function checkPath(path: string) {
   try {
@@ -37,6 +38,13 @@ function rmdir(path: string) {
 }
 
 function rmfileordir(path: string) {
+  if (path === '*') {
+    const list = readdir(process.cwd());
+    list.forEach((l) => {
+      rmfileordir(l);
+    });
+    return;
+  }
   const _path = resolve(path);
   if (existsSync(_path)) {
     if (checkPath(_path) === 'dir') {

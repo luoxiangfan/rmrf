@@ -55,5 +55,8 @@
     "prettier": "^3.4.2",
     "typescript": "^5.7.2",
     "unbuild": "^3.0.1"
+  },
+  "dependencies": {
+    "@lxf2513/readdir-sync-recursive": "^1.2.2"
   }
 }
