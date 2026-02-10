@@ -1,0 +1,121 @@
+name: Dependabot 自动合并
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: write
+  pull-requests: write
+  checks: read
+
+jobs:
+  auto-merge:
+    # 仅处理来自dependabot的PR
+    if: github.actor == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 检查 PR 状态
+        id: check-pr
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // 获取检查状态
+            const { data: checks } = await github.rest.checks.listForRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: context.payload.pull_request.head.sha,
+            });
+            
+            console.log('=== 检查状态列表 ===');
+            const checkList = checks.check_runs.map(run => {
+              return `${run.name}: ${run.status} (${run.conclusion || 'pending'})`;
+            });
+            console.log(checkList.join('\n'));
+            
+            // 检查是否有失败的
+            const failed = checks.check_runs.filter(
+              run => run.conclusion && run.conclusion !== 'success' && run.conclusion !== 'skipped'
+            );
+            
+            if (failed.length > 0) {
+              console.log('❌ 以下检查失败:', failed.map(f => f.name).join(', '));
+              core.setFailed('有些检查未通过');
+              return false;
+            }
+            
+            // 检查是否全部完成
+            const pending = checks.check_runs.filter(
+              run => run.status !== 'completed'
+            );
+            
+            if (pending.length > 0) {
+              console.log('⏳ 等待检查完成:', pending.length, '个检查还在进行中');
+              // 设置输出，让下一个步骤知道需要等待
+              core.setOutput('pending', 'true');
+              return false;
+            }
+            
+            console.log('✅ 所有检查已通过！');
+            core.setOutput('ready', 'true');
+            return true;
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+      - name: 等待 30 秒（如果需要）
+        if: steps.check-pr.outputs.pending == 'true'
+        run: sleep 30
+        
+      - name: 重试检查
+        if: steps.check-pr.outputs.pending == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: checks } = await github.rest.checks.listForRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: context.payload.pull_request.head.sha,
+            });
+            
+            const failed = checks.check_runs.filter(
+              run => run.conclusion && run.conclusion !== 'success' && run.conclusion !== 'skipped'
+            );
+            
+            if (failed.length > 0) {
+              core.setFailed('重试后仍有检查失败: ' + failed.map(f => f.name).join(', '));
+            } else if (checks.check_runs.some(run => run.status !== 'completed')) {
+              core.setFailed('30秒后仍有检查未完成');
+            } else {
+              console.log('✅ 所有检查已完成并通过');
+            }
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+      - name: 自动合并 PR
+        if: success() && github.actor == 'dependabot[bot]'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            try {
+              const result = await github.rest.pulls.merge({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: context.payload.pull_request.number,
+                merge_method: 'squash', // 或 'merge'、'rebase'
+                commit_title: `chore(deps): 自动合并 Dependabot 更新 #${context.payload.pull_request.number}`
+              });
+              
+              console.log(`✅ PR #${context.payload.pull_request.number} 已合并`);
+              console.log(`SHA: ${result.data.sha}`);
+            } catch (error) {
+              console.error('❌ 合并失败:', error.message);
+              
+              // 如果是冲突错误，提供更多信息
+              if (error.message.includes('merge conflict') || error.message.includes('Conflict')) {
+                console.log('⚠️  检测到合并冲突，需要手动解决');
+              }
+              
+              core.setFailed(`自动合并失败: ${error.message}`);
+            }
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
