@@ -1,4 +1,4 @@
-name: Dependabot 简版自动合并
+name: Dependabot 自动合并
 on:
   pull_request:
     types: [opened, synchronize]
